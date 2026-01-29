@@ -1,10 +1,12 @@
+import type { UserInfoRaw } from '@vben/types';
+
 import { baseRequestClient, requestClient } from '#/api/request';
 
 export namespace AuthApi {
   /** 登录接口参数 */
   export interface LoginParams {
+    account?: string;
     password?: string;
-    username?: string;
   }
 
   /** 登录接口返回值 */
@@ -18,11 +20,22 @@ export namespace AuthApi {
   }
 }
 
+interface LoginResultInternal {
+  code: number;
+  token: string;
+  msg: string;
+}
 /**
  * 登录
  */
 export async function loginApi(data: AuthApi.LoginParams) {
-  return requestClient.post<AuthApi.LoginResult>('/auth/login', data);
+  return requestClient
+    .post<LoginResultInternal>('/login', data, { responseReturn: 'body' })
+    .then((res): AuthApi.LoginResult => {
+      return {
+        accessToken: res.token,
+      };
+    });
 }
 
 /**
@@ -38,7 +51,7 @@ export async function refreshTokenApi() {
  * 退出登录
  */
 export async function logoutApi() {
-  return baseRequestClient.post('/auth/logout', {
+  return baseRequestClient.post('logout', {
     withCredentials: true,
   });
 }
@@ -47,5 +60,7 @@ export async function logoutApi() {
  * 获取用户权限码
  */
 export async function getAccessCodesApi() {
-  return requestClient.get<string[]>('/auth/codes');
+  return requestClient
+    .get<UserInfoRaw>('/getInfo', { responseReturn: 'body' })
+    .then((data) => data.permissions);
 }

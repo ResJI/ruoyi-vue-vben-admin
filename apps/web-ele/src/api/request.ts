@@ -9,6 +9,8 @@ import {
   authenticateResponseInterceptor,
   defaultResponseInterceptor,
   errorMessageResponseInterceptor,
+  logicErrorMessageResponseInterceptor,
+  LogicResponseError,
   RequestClient,
 } from '@vben/request';
 import { useAccessStore } from '@vben/stores';
@@ -71,6 +73,14 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
     },
   });
 
+  // 逻辑异常处理
+  client.addResponseInterceptor(
+    logicErrorMessageResponseInterceptor({
+      codeField: 'code',
+      errorCode: 500,
+    }),
+  );
+
   // 处理返回的响应数据格式
   client.addResponseInterceptor(
     defaultResponseInterceptor({
@@ -98,8 +108,10 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
       // 当前mock接口返回的错误字段是 error 或者 message
       const responseData = error?.response?.data ?? {};
       const errorMessage = responseData?.error ?? responseData?.message ?? '';
+      const logicErrorMessage =
+        error instanceof LogicResponseError ? error.message : null;
       // 如果没有错误信息，则会根据状态码进行提示
-      ElMessage.error(errorMessage || msg);
+      ElMessage.error(logicErrorMessage || msg || errorMessage);
     }),
   );
 

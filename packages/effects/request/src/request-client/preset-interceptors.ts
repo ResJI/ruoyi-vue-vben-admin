@@ -163,3 +163,29 @@ export const errorMessageResponseInterceptor = (
     },
   };
 };
+
+export class LogicResponseError extends Error {}
+
+export const logicErrorMessageResponseInterceptor = ({
+  codeField = 'code',
+  errorCode = 500,
+}: {
+  codeField: string;
+  errorCode: number;
+}): ResponseInterceptorConfig => {
+  return {
+    fulfilled: (response) => {
+      const { config, data: responseData } = response;
+
+      if (
+        config.responseReturn !== 'raw' &&
+        responseData[codeField] === errorCode
+      ) {
+        // makeErrorMessage(responseData.msg ?? '未知错误');
+        throw new LogicResponseError(responseData.msg ?? '未知错误');
+      }
+
+      return response;
+    },
+  };
+};
