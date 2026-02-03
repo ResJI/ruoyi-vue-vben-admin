@@ -10,7 +10,7 @@ import {
   defaultResponseInterceptor,
   errorMessageResponseInterceptor,
   logicErrorMessageResponseInterceptor,
-  LogicResponseError,
+  logicLoginExpiredResponseInterceptor,
   RequestClient,
 } from '@vben/request';
 import { useAccessStore } from '@vben/stores';
@@ -77,7 +77,16 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
   client.addResponseInterceptor(
     logicErrorMessageResponseInterceptor({
       codeField: 'code',
+      messageField: 'msg',
       errorCode: 500,
+    }),
+  );
+
+  // 逻辑token过期拦截
+  client.addResponseInterceptor(
+    logicLoginExpiredResponseInterceptor({
+      codeField: 'code',
+      errorCode: 401,
     }),
   );
 
@@ -108,10 +117,8 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
       // 当前mock接口返回的错误字段是 error 或者 message
       const responseData = error?.response?.data ?? {};
       const errorMessage = responseData?.error ?? responseData?.message ?? '';
-      const logicErrorMessage =
-        error instanceof LogicResponseError ? error.message : null;
       // 如果没有错误信息，则会根据状态码进行提示
-      ElMessage.error(logicErrorMessage || msg || errorMessage);
+      ElMessage.error(errorMessage || msg);
     }),
   );
 

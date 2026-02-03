@@ -4,7 +4,7 @@ import type { MakeErrorMessageFn, ResponseInterceptorConfig } from './types';
 import { $t } from '@vben/locales';
 import { isFunction } from '@vben/utils';
 
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 
 export const defaultResponseInterceptor = ({
   codeField = 'code',
@@ -164,11 +164,39 @@ export const errorMessageResponseInterceptor = (
   };
 };
 
-export class LogicResponseError extends Error {}
-
 export const logicErrorMessageResponseInterceptor = ({
   codeField = 'code',
+  messageField = 'message',
   errorCode = 500,
+}: {
+  codeField: string;
+  errorCode: number;
+  messageField: string;
+}): ResponseInterceptorConfig => {
+  return {
+    fulfilled: (response) => {
+      const { config, data: responseData } = response;
+
+      if (
+        config.responseReturn !== 'raw' &&
+        responseData[codeField] === errorCode
+      ) {
+        throw new AxiosError(undefined, undefined, undefined, undefined, {
+          ...response,
+          data: {
+            message: responseData[messageField] ?? '未知错误',
+          },
+        });
+      }
+
+      return response;
+    },
+  };
+};
+
+export const logicLoginExpiredResponseInterceptor = ({
+  codeField = 'code',
+  errorCode = 401,
 }: {
   codeField: string;
   errorCode: number;
@@ -181,8 +209,10 @@ export const logicErrorMessageResponseInterceptor = ({
         config.responseReturn !== 'raw' &&
         responseData[codeField] === errorCode
       ) {
-        // makeErrorMessage(responseData.msg ?? '未知错误');
-        throw new LogicResponseError(responseData.msg ?? '未知错误');
+        throw new AxiosError(undefined, undefined, undefined, undefined, {
+          ...response,
+          status: 401,
+        });
       }
 
       return response;
