@@ -1,11 +1,14 @@
 <script setup lang="ts">
 import type { VbenFormSchema } from '#/adapter/form';
+import type { PasswordForm } from '#/views/_core/profile/types';
 
 import { computed } from 'vue';
 
 import { ProfilePasswordSetting, z } from '@vben/common-ui';
 
-import { ElMessage } from 'element-plus';
+const emits = defineEmits<{
+  (e: 'submit', data: PasswordForm): void;
+}>();
 
 const formSchema = computed((): VbenFormSchema[] => {
   return [
@@ -50,13 +53,16 @@ const formSchema = computed((): VbenFormSchema[] => {
   ];
 });
 
-function handleSubmit() {
-  ElMessage.success('密码修改成功');
+function handleSubmit(data: Record<string, string>) {
+  emits('submit', {
+    oldPassword: data.oldPassword ?? '',
+    newPassword: data.newPassword ?? '',
+  });
 }
 </script>
 <template>
   <ProfilePasswordSetting
-    class="w-1/3"
+    class="w-full"
     :form-schema="formSchema"
     @submit="handleSubmit"
   />

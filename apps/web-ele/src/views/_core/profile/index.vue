@@ -1,13 +1,17 @@
 <script setup lang="ts">
+import type { BasicInfoForm, PasswordForm } from '#/views/_core/profile/types';
+
 import { ref } from 'vue';
 
-import { Profile } from '@vben/common-ui';
 import { useUserStore } from '@vben/stores';
 
+import { ElMessage } from 'element-plus';
+
+import { resetPasswordApi, updateUserInfoApi } from '#/api';
+
 import ProfileBase from './base-setting.vue';
-import ProfileNotificationSetting from './notification-setting.vue';
 import ProfilePasswordSetting from './password-setting.vue';
-import ProfileSecuritySetting from './security-setting.vue';
+import Profile from './profile.vue';
 
 const userStore = useUserStore();
 
@@ -19,18 +23,25 @@ const tabs = ref([
     value: 'basic',
   },
   {
-    label: '安全设置',
-    value: 'security',
-  },
-  {
     label: '修改密码',
     value: 'password',
   },
-  {
-    label: '新消息提醒',
-    value: 'notice',
-  },
 ]);
+
+async function updateUser(data: BasicInfoForm) {
+  const requestData = {
+    ...data,
+    phonenumber: data.phoneNumber,
+  };
+  Reflect.deleteProperty(requestData, 'phoneNumber');
+  await updateUserInfoApi(requestData);
+  ElMessage.success('基本信息更新成功');
+}
+
+async function resetPassword(data: PasswordForm) {
+  await resetPasswordApi(data);
+  ElMessage.success('密码修改成功');
+}
 </script>
 <template>
   <Profile
@@ -40,10 +51,11 @@ const tabs = ref([
     :tabs="tabs"
   >
     <template #content>
-      <ProfileBase v-if="tabsValue === 'basic'" />
-      <ProfileSecuritySetting v-if="tabsValue === 'security'" />
-      <ProfilePasswordSetting v-if="tabsValue === 'password'" />
-      <ProfileNotificationSetting v-if="tabsValue === 'notice'" />
+      <ProfileBase v-if="tabsValue === 'basic'" @submit="updateUser" />
+      <ProfilePasswordSetting
+        v-if="tabsValue === 'password'"
+        @submit="resetPassword"
+      />
     </template>
   </Profile>
 </template>

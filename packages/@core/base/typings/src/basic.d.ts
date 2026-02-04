@@ -7,11 +7,18 @@ type SelectOption = BasicOption;
 
 type TabOption = BasicOption;
 
+enum Sex {
+  FEMALE = '1',
+  MALE = '0',
+}
+
 interface BasicUserInfo {
   /**
    * 头像
    */
   avatar: string;
+  email: string;
+  phoneNumber: string;
   /**
    * 用户昵称
    */
@@ -20,6 +27,7 @@ interface BasicUserInfo {
    * 用户角色
    */
   roles?: string[];
+  sex: Sex;
   /**
    * 用户id
    */
@@ -32,4 +40,11 @@ interface BasicUserInfo {
 
 type ClassType = Array<object | string> | object | string;
 
-export type { BasicOption, BasicUserInfo, ClassType, SelectOption, TabOption };
+export type {
+  BasicOption,
+  BasicUserInfo,
+  ClassType,
+  SelectOption,
+  Sex,
+  TabOption,
+};
