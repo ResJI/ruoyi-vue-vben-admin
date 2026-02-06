@@ -12,7 +12,7 @@ export async function getUserInfoApi() {
     .get<UserInfoRaw>('/getInfo', { responseReturn: 'body' })
     .then((data): UserInfo => {
       return {
-        avatar: data.user.avatar,
+        avatar: `${import.meta.env.VITE_GLOB_API_URL}${data.user.avatar}`,
         realName: data.user.nickName,
         roles: data.roles,
         userId: String(data.user.userId),
@@ -39,4 +39,10 @@ export async function resetPasswordApi(data: {
     '/system/user/profile/updatePwd',
     data,
   );
+}
+
+export async function uploadAvatar(file: Blob | File) {
+  return requestClient.upload('/system/user/profile/avatar', {
+    avatarfile: file,
+  });
 }

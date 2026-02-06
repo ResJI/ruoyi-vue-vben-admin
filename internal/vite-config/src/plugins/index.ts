@@ -58,6 +58,12 @@ async function loadCommonPlugins(
             defineModel: true,
             // propsDestructure: true,
           },
+          template: {
+            compilerOptions: {
+              // 添加自定义cropper元素
+              isCustomElement: (tag) => tag.startsWith('cropper'),
+            },
+          },
         }),
         viteVueJsx(),
       ],

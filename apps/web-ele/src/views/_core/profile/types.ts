@@ -7,6 +7,7 @@ export interface Props {
     label: string;
     value: string;
   }[];
+  onUploadImage: (data: Blob) => Promise<void>;
 }
 
 export interface BasicInfoForm {

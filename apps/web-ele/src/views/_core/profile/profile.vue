@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import type { Props } from './types';
 
-import { Page, VbenAvatar } from '@vben/common-ui';
+import { Page } from '@vben/common-ui';
 import { preferences } from '@vben/preferences';
 
 import { ElCard, ElDivider } from 'element-plus';
+
+import UserAvatar from './user-avatar.vue';
 
 defineOptions({
   name: 'ProfileUI',
@@ -13,6 +15,7 @@ defineOptions({
 withDefaults(defineProps<Props>(), {
   title: '关于项目',
   tabs: () => [],
+  onUploadImage: () => Promise.resolve(),
 });
 
 const tabsValue = defineModel<string>('modelValue');
@@ -26,9 +29,10 @@ const tabsValue = defineModel<string>('modelValue');
         body-style="padding: 0"
       >
         <div class="mt-4 flex h-40 flex-col items-center justify-center gap-4">
-          <VbenAvatar
+          <UserAvatar
             :src="userInfo?.avatar ?? preferences.app.defaultAvatar"
             class="size-20"
+            :on-upload-image="onUploadImage"
           />
           <span class="text-lg font-semibold">
             {{ userInfo?.realName ?? '' }}

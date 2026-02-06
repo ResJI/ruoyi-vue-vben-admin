@@ -7,7 +7,12 @@ import { useUserStore } from '@vben/stores';
 
 import { ElMessage } from 'element-plus';
 
-import { resetPasswordApi, updateUserInfoApi } from '#/api';
+import {
+  getUserInfoApi,
+  resetPasswordApi,
+  updateUserInfoApi,
+  uploadAvatar,
+} from '#/api';
 
 import ProfileBase from './base-setting.vue';
 import ProfilePasswordSetting from './password-setting.vue';
@@ -28,6 +33,11 @@ const tabs = ref([
   },
 ]);
 
+async function updateInfo() {
+  const userInfo = await getUserInfoApi();
+  userStore.setUserInfo(userInfo);
+}
+
 async function updateUser(data: BasicInfoForm) {
   const requestData = {
     ...data,
@@ -35,12 +45,20 @@ async function updateUser(data: BasicInfoForm) {
   };
   Reflect.deleteProperty(requestData, 'phoneNumber');
   await updateUserInfoApi(requestData);
+  await updateInfo();
   ElMessage.success('基本信息更新成功');
 }
 
 async function resetPassword(data: PasswordForm) {
   await resetPasswordApi(data);
+  await updateInfo();
   ElMessage.success('密码修改成功');
+}
+
+async function onUploadImage(data: Blob) {
+  await uploadAvatar(data);
+  await updateInfo();
+  ElMessage.success('头像上传成功');
 }
 </script>
 <template>
@@ -49,6 +67,7 @@ async function resetPassword(data: PasswordForm) {
     title="个人中心"
     :user-info="userStore.userInfo"
     :tabs="tabs"
+    :on-upload-image="onUploadImage"
   >
     <template #content>
       <ProfileBase v-if="tabsValue === 'basic'" @submit="updateUser" />
