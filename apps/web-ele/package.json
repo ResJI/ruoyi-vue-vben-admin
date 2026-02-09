@@ -47,6 +47,7 @@
     "element-plus": "catalog:",
     "lodash-es": "catalog:",
     "pinia": "catalog:",
+    "unplugin-icons": "catalog:",
     "vue": "catalog:",
     "vue-router": "catalog:"
   },

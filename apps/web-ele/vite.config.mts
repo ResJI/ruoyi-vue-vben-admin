@@ -1,6 +1,7 @@
 import { defineConfig } from '@vben/vite-config';
 
 import ElementPlus from 'unplugin-element-plus/vite';
+import Icons from 'unplugin-icons/vite';
 
 export default defineConfig(async () => {
   return {
@@ -10,6 +11,7 @@ export default defineConfig(async () => {
         ElementPlus({
           format: 'esm',
         }),
+        Icons({ compiler: 'vue3' })
       ],
       server: {
         proxy: {

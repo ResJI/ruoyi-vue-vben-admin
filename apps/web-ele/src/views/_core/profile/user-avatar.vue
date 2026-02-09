@@ -4,9 +4,13 @@ import type { UploadRawFile } from 'element-plus';
 import { ref, useTemplateRef } from 'vue';
 
 import { VbenAvatar } from '@vben/common-ui';
-import { createIconifyIcon } from '@vben/icons';
 
 import { ElMessage } from 'element-plus';
+import Minus from '~icons/ep/minus';
+import Plus from '~icons/ep/plus';
+import RefreshLeft from '~icons/ep/refresh-left';
+import RefreshRight from '~icons/ep/refresh-right';
+import Upload from '~icons/ep/upload';
 
 import Cropper from './cropper.vue';
 
@@ -14,12 +18,6 @@ const props = defineProps<{
   onUploadImage: (data: Blob) => Promise<void>;
   src: string;
 }>();
-
-const Plus = createIconifyIcon('ep:plus');
-const Minus = createIconifyIcon('ep:minus');
-const RefreshLeft = createIconifyIcon('ep:refresh-left');
-const RefreshRight = createIconifyIcon('ep:refresh-right');
-const Upload = createIconifyIcon('ep:upload');
 
 const hoverShow = ref(false);
 const cropperRef = useTemplateRef('cropperRef');

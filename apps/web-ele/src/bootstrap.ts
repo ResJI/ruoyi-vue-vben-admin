@@ -2,13 +2,11 @@ import { createApp, watchEffect } from 'vue';
 
 import { registerAccessDirective } from '@vben/access';
 import { registerLoadingDirective } from '@vben/common-ui';
-import { addCollection } from '@vben/icons';
 import { preferences } from '@vben/preferences';
 import { initStores } from '@vben/stores';
 import '@vben/styles';
 import '@vben/styles/ele';
 
-import icons from '@iconify/json/json/mdi.json';
 import { useTitle } from '@vueuse/core';
 import ElementPlus, { ElLoading } from 'element-plus';
 
@@ -66,9 +64,6 @@ async function bootstrap(namespace: string) {
   // 配置Motion插件
   const { MotionPlugin } = await import('@vben/plugins/motion');
   app.use(MotionPlugin);
-
-  // 添加Iconify离线图标
-  addCollection(icons);
 
   // 全局注册ElementPlus
   app.use(ElementPlus);
