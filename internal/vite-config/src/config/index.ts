@@ -9,6 +9,8 @@ import { defineLibraryConfig } from './library';
 export * from './application';
 export * from './library';
 
+export type { VbenViteConfig };
+
 function defineConfig(
   userConfigPromise?: DefineConfig,
   type: 'application' | 'auto' | 'library' = 'auto',
