@@ -1,4 +1,4 @@
-import type { UserInfoRaw } from '@vben/types';
+import type { UserInfoRaw } from './types';
 
 import { baseRequestClient, requestClient } from '#/api/request';
 
