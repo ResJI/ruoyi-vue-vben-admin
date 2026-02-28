@@ -2,6 +2,7 @@ import type { RouteRecordRaw } from 'vue-router';
 
 import IconShield from '~icons/bi/shield-lock';
 import IconUser from '~icons/ep/user';
+import IconPost from '~icons/gis/position-man';
 import IconBranch from '~icons/icon-park-solid/branch-one';
 import IconConfig from '~icons/lucide/file-cog';
 import IconDict from '~icons/streamline/dictionary-language-book';
@@ -114,7 +115,7 @@ const routes: RouteRecordRaw[] = [
         path: '/post',
         component: () => import('#/views/system/post/index.vue'),
         meta: {
-          icon: 'gis:position-man',
+          icon: IconPost,
           title: '岗位管理',
           authority: ['admin', 'system:post:list'],
         },
