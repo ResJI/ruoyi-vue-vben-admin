@@ -14,7 +14,7 @@ export async function getUserInfoApi() {
       return {
         avatar: `${import.meta.env.VITE_GLOB_API_URL}${data.user.avatar}`,
         realName: data.user.nickName,
-        roles: data.roles,
+        roles: [...data.roles, ...data.permissions],
         userId: String(data.user.userId),
         username: data.user.userName,
         phoneNumber: data.user.phonenumber,
