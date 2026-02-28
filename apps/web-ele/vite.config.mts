@@ -11,7 +11,7 @@ export default defineConfig(async () => {
         ElementPlus({
           format: 'esm',
         }),
-        Icons({ compiler: 'vue3' })
+        Icons({ compiler: 'vue3' }),
       ],
       server: {
         proxy: {

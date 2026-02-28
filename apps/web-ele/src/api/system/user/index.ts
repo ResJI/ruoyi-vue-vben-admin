@@ -42,3 +42,18 @@ export async function changeUserStatusApi(data: any) {
 export async function getDepartmentTree() {
   return requestClient.get('/system/user/deptTree');
 }
+
+export async function getAuthRoleApi(userId: number | string) {
+  return requestClient
+    .get(`/system/user/authRole/${userId}`, {
+      responseReturn: 'body',
+    })
+    .then((res) => ({
+      roles: res.roles,
+      user: res.user,
+    }));
+}
+
+export async function updateAuthRoleApi(data: any) {
+  return requestClient.put('/system/user/authRole', null, { params: data });
+}

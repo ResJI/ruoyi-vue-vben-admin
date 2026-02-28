@@ -10,6 +10,7 @@ export async function getDict(code: string) {
         id: item.dictCode,
         label: item.dictLabel,
         value: item.dictValue,
+        type: item.listClass,
       })),
     );
 }

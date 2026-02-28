@@ -2,6 +2,7 @@
 import type { Dict } from '#/api/ruoyi/type';
 
 import { onMounted, ref, useTemplateRef } from 'vue';
+import { useRouter } from 'vue-router';
 
 import { Page } from '@vben/common-ui';
 
@@ -27,6 +28,7 @@ import UserDialog from './user-dialog.vue';
 
 import 'splitpanes/dist/splitpanes.css';
 
+const router = useRouter();
 const userLeftRef = useTemplateRef('userLeftRef');
 const userDialogRef = useTemplateRef('userDialogRef');
 const departmentTree = ref<any[]>([]);
@@ -125,6 +127,15 @@ function onResetPassword(data: any) {
     .catch();
 }
 
+function onDistributeRole(data: any) {
+  router.push({
+    name: 'UserAuth',
+    params: {
+      userId: data.userId,
+    },
+  });
+}
+
 async function create(data: any) {
   await createUserApi(data);
   ElMessage.success('用户创建成功');
@@ -205,6 +216,7 @@ onMounted(async () => {
             @current-page-change="pageInfo.currentPage = $event"
             @page-size-change="pageInfo.pageSize = $event"
             @reset-password="onResetPassword"
+            @distribute-role="onDistributeRole"
           />
         </Pane>
       </Splitpanes>

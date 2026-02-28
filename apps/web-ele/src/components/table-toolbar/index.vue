@@ -33,7 +33,7 @@ const props = withDefaults(
       show: boolean;
     };
     searchConfig?: {
-      isVisible: boolean;
+      isVisible?: boolean;
       show: boolean;
     };
     updateConfig?: ToolConfig;
@@ -126,8 +126,9 @@ function toggleFilterCheckAll() {
 }
 
 function getVisible(config: ToolConfig) {
-  return config.accessCodes.length > 0
-    ? (hasAccessByCodes(config.accessCodes) || hasAccessByRoles(['admin'])) &&
+  return (config?.accessCodes?.length ?? 0) > 0
+    ? (hasAccessByCodes(config?.accessCodes ?? []) ||
+        hasAccessByRoles(['admin'])) &&
         config.show
     : config.show;
 }
@@ -186,6 +187,7 @@ function getVisible(config: ToolConfig) {
       >
         导出
       </el-button>
+      <slot></slot>
     </div>
     <div>
       <el-tooltip

@@ -73,8 +73,8 @@ const toolbarConfig = reactive({
     disabled: computed(() => tableSelections.value.length === 0),
     accessCodes: ['system:user:remove'],
   },
-  import: { show: false, disabled: false, accessCodes: ['system:user:import'] },
-  export: { show: false, disabled: false, accessCodes: ['system:user:export'] },
+  import: { show: false },
+  export: { show: false },
   search: { show: true, isVisible: true },
   filter: {
     columns: [
@@ -203,7 +203,6 @@ function onSelectChange(selection: any) {
           placeholder="请输入用户名称"
           clearable
           style="width: 240px"
-          @keyup.enter="onQuery"
         />
       </el-form-item>
       <el-form-item label="手机号码" prop="phonenumber">
@@ -212,7 +211,6 @@ function onSelectChange(selection: any) {
           placeholder="请输入手机号码"
           clearable
           style="width: 240px"
-          @keyup.enter="onQuery"
         />
       </el-form-item>
       <el-form-item label="状态" prop="status">
@@ -332,12 +330,7 @@ function onSelectChange(selection: any) {
         prop="createTime"
         width="160"
       />
-      <el-table-column
-        label="操作"
-        align="center"
-        width="150"
-        class-name="small-padding fixed-width"
-      >
+      <el-table-column label="操作" align="center" width="150" fixed="right">
         <template #default="scope">
           <el-tooltip
             content="修改"
