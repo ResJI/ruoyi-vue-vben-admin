@@ -170,16 +170,17 @@ export const logicErrorMessageResponseInterceptor = ({
   errorCode = 500,
 }: {
   codeField: string;
-  errorCode: number;
+  errorCode: number | number[];
   messageField: string;
 }): ResponseInterceptorConfig => {
   return {
     fulfilled: (response) => {
       const { config, data: responseData } = response;
+      errorCode = Array.isArray(errorCode) ? errorCode : [errorCode];
 
       if (
         config.responseReturn !== 'raw' &&
-        responseData[codeField] === errorCode
+        errorCode.includes(responseData[codeField])
       ) {
         throw new AxiosError(undefined, undefined, undefined, undefined, {
           ...response,

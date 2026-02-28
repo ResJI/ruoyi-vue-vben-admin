@@ -78,7 +78,7 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
     logicErrorMessageResponseInterceptor({
       codeField: 'code',
       messageField: 'msg',
-      errorCode: 500,
+      errorCode: [500, 601],
     }),
   );
 
