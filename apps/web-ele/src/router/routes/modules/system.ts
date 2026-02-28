@@ -1,5 +1,12 @@
 import type { RouteRecordRaw } from 'vue-router';
 
+import IconShield from '~icons/bi/shield-lock';
+import IconUser from '~icons/ep/user';
+import IconBranch from '~icons/icon-park-solid/branch-one';
+import IconConfig from '~icons/lucide/file-cog';
+import IconDict from '~icons/streamline/dictionary-language-book';
+import IconGroup from '~icons/streamline/user-multiple-group';
+
 const routes: RouteRecordRaw[] = [
   {
     meta: {
@@ -15,7 +22,7 @@ const routes: RouteRecordRaw[] = [
         name: 'User',
         path: 'user',
         meta: {
-          icon: 'ep:user',
+          icon: IconUser,
           title: '用户管理',
           authority: ['admin', 'system:user:list'],
           hideChildrenInMenu: true,
@@ -26,7 +33,7 @@ const routes: RouteRecordRaw[] = [
             path: '',
             component: () => import('#/views/system/user/index.vue'),
             meta: {
-              icon: 'ep:user',
+              icon: IconUser,
               title: '用户管理',
               authority: ['admin', 'system:user:list'],
             },
@@ -36,7 +43,7 @@ const routes: RouteRecordRaw[] = [
             path: String.raw`user-auth/:userId(\d+)`,
             component: () => import('#/views/system/user/auth-role/index.vue'),
             meta: {
-              icon: 'ep:user',
+              icon: IconUser,
               title: '分配角色',
               hideInMenu: true,
               hideInTab: true,
@@ -50,7 +57,7 @@ const routes: RouteRecordRaw[] = [
         name: 'Role',
         path: 'role',
         meta: {
-          icon: 'boxicons:group',
+          icon: IconGroup,
           title: '角色管理',
           authority: ['admin', 'system:role:list'],
           hideChildrenInMenu: true,
@@ -61,7 +68,7 @@ const routes: RouteRecordRaw[] = [
             path: '',
             component: () => import('#/views/system/role/index.vue'),
             meta: {
-              icon: 'boxicons:group',
+              icon: IconGroup,
               title: '角色管理',
               authority: ['admin', 'system:role:list'],
             },
@@ -71,7 +78,7 @@ const routes: RouteRecordRaw[] = [
             path: String.raw`/auth-user/:roleId(\d+)`,
             component: () => import('#/views/system/role/auth-user/index.vue'),
             meta: {
-              icon: 'boxicons:group',
+              icon: IconGroup,
               title: '分配用户',
               hideInMenu: true,
               hideInTab: true,
@@ -87,7 +94,7 @@ const routes: RouteRecordRaw[] = [
         path: '/auth-config',
         component: () => import('#/views/system/auth/index.vue'),
         meta: {
-          icon: 'bi:shield-lock',
+          icon: IconShield,
           title: '权限管理',
           authority: ['admin', 'system:menu:list'],
         },
@@ -97,7 +104,7 @@ const routes: RouteRecordRaw[] = [
         path: '/dept',
         component: () => import('#/views/system/dept/index.vue'),
         meta: {
-          icon: 'icon-park-solid:branch-one',
+          icon: IconBranch,
           title: '部门管理',
           authority: ['admin', 'system:dept:list'],
         },
@@ -116,7 +123,7 @@ const routes: RouteRecordRaw[] = [
         name: 'Dict',
         path: 'dict',
         meta: {
-          icon: 'streamline:dictionary-language-book',
+          icon: IconDict,
           title: '字典管理',
           authority: ['admin', 'system:dict:list'],
           hideChildrenInMenu: true,
@@ -127,7 +134,7 @@ const routes: RouteRecordRaw[] = [
             path: '',
             component: () => import('#/views/system/dict/index.vue'),
             meta: {
-              icon: 'streamline:dictionary-language-book',
+              icon: IconDict,
               title: '字典管理',
               authority: ['admin', 'system:dict:list'],
             },
@@ -137,7 +144,7 @@ const routes: RouteRecordRaw[] = [
             path: String.raw`/dict-data/:dictId(\d+)`,
             component: () => import('#/views/system/dict/data/index.vue'),
             meta: {
-              icon: 'streamline:dictionary-language-book',
+              icon: IconDict,
               title: '字典数据',
               hideInMenu: true,
               hideInTab: true,
@@ -152,7 +159,7 @@ const routes: RouteRecordRaw[] = [
         path: '/config',
         component: () => import('#/views/system/config/index.vue'),
         meta: {
-          icon: 'eos-icons:configuration-file-outlined',
+          icon: IconConfig,
           title: '参数设置',
           authority: ['admin', 'system:config:list'],
         },
