@@ -7,7 +7,7 @@ import type {
 
 import type { TabDefinition } from '@vben-core/typings';
 
-import { toRaw } from 'vue';
+import { markRaw, toRaw } from 'vue';
 
 import { preferences } from '@vben-core/preferences';
 import {
@@ -108,6 +108,9 @@ export const useTabbarStore = defineStore('core-tabbar', {
      */
     addTab(routeTab: TabDefinition): TabDefinition {
       let tab = cloneTab(routeTab);
+      if (tab?.meta?.icon) {
+        tab.meta.icon = markRaw(tab.meta.icon);
+      }
       if (!tab.key) {
         tab.key = getTabKey(routeTab);
       }
