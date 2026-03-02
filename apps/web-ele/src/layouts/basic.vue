@@ -15,6 +15,8 @@ import {
 import { preferences } from '@vben/preferences';
 import { useAccessStore, useUserStore } from '@vben/stores';
 
+import IconUser from '~icons/lucide/user';
+
 import { $t } from '#/locales';
 import { useAuthStore } from '#/store';
 import LoginForm from '#/views/_core/authentication/login.vue';
@@ -35,7 +37,7 @@ const menus = computed(() => [
     handler: () => {
       router.push({ name: 'Profile' });
     },
-    icon: 'lucide:user',
+    icon: IconUser,
     text: $t('page.auth.profile'),
   },
 ]);
