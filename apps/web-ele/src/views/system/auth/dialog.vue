@@ -50,7 +50,6 @@ const formRules: FormRules = {
   parentId: [{ required: true, message: '上级权限不能为空', trigger: 'blur' }],
   menuName: [{ required: true, message: '权限名称不能为空', trigger: 'blur' }],
   orderNum: [{ required: true, message: '显示排序不能为空', trigger: 'blur' }],
-  perms: [{ required: true, message: '权限字符不能为空', trigger: 'blur' }],
 };
 
 function open(data?: FormData, create: boolean = true) {
