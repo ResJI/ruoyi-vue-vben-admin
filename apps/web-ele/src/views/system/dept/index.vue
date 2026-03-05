@@ -202,7 +202,6 @@ onMounted(async () => {
         row-key="deptId"
         show-overflow-tooltip
       >
-        <el-table-column type="selection" width="50" align="center" />
         <el-table-column label="部门名称" prop="deptName" min-width="260" />
         <el-table-column label="排序" prop="orderNum" min-width="260" />
         <el-table-column label="状态" align="center" min-width="100">
