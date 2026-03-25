@@ -1,6 +1,7 @@
 import type { RouteRecordRaw } from 'vue-router';
 
 import IconShield from '~icons/bi/shield-lock';
+import IconClock from '~icons/ep/clock';
 import IconUser from '~icons/ep/user';
 import IconPost from '~icons/gis/position-man';
 import IconBranch from '~icons/icon-park-solid/branch-one';
@@ -76,7 +77,7 @@ const routes: RouteRecordRaw[] = [
           },
           {
             name: 'AuthUser',
-            path: String.raw`/auth-user/:roleId(\d+)`,
+            path: String.raw`auth-user/:roleId(\d+)`,
             component: () => import('#/views/system/role/auth-user/index.vue'),
             meta: {
               icon: IconGroup,
@@ -92,7 +93,7 @@ const routes: RouteRecordRaw[] = [
 
       {
         name: 'AuthConfig',
-        path: '/auth-config',
+        path: 'auth-config',
         component: () => import('#/views/system/auth/index.vue'),
         meta: {
           icon: IconShield,
@@ -102,7 +103,7 @@ const routes: RouteRecordRaw[] = [
       },
       {
         name: 'Dept',
-        path: '/dept',
+        path: 'dept',
         component: () => import('#/views/system/dept/index.vue'),
         meta: {
           icon: IconBranch,
@@ -112,7 +113,7 @@ const routes: RouteRecordRaw[] = [
       },
       {
         name: 'Post',
-        path: '/post',
+        path: 'post',
         component: () => import('#/views/system/post/index.vue'),
         meta: {
           icon: IconPost,
@@ -142,7 +143,7 @@ const routes: RouteRecordRaw[] = [
           },
           {
             name: 'DictData',
-            path: String.raw`/dict-data/:dictId(\d+)`,
+            path: String.raw`dict-data/:dictId(\d+)`,
             component: () => import('#/views/system/dict/data/index.vue'),
             meta: {
               icon: IconDict,
@@ -157,13 +158,48 @@ const routes: RouteRecordRaw[] = [
       },
       {
         name: 'Config',
-        path: '/config',
+        path: 'config',
         component: () => import('#/views/system/config/index.vue'),
         meta: {
           icon: IconConfig,
           title: '参数设置',
           authority: ['admin', 'system:config:list'],
         },
+      },
+      {
+        name: 'Job',
+        path: 'job',
+        meta: {
+          icon: IconClock,
+          title: '定时任务',
+          authority: ['admin', 'monitor:job:list'],
+          hideChildrenInMenu: true,
+        },
+        children: [
+          {
+            name: 'JobList',
+            path: '',
+            component: () => import('#/views/system/job/index.vue'),
+            meta: {
+              icon: IconClock,
+              title: '定时任务',
+              authority: ['admin', 'monitor:job:list'],
+            },
+          },
+          {
+            name: 'JobLog',
+            path: String.raw`log/:jobId(\d+)?`,
+            component: () => import('#/views/system/job/log/index.vue'),
+            meta: {
+              icon: IconClock,
+              title: '任务日志',
+              hideInMenu: true,
+              hideInTab: true,
+              hideInBreadcrumb: true,
+              activePath: '/system/job',
+            },
+          },
+        ],
       },
     ],
   },

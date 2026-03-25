@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import type { ElForm } from 'element-plus';
 
+import type { Dict } from '#/api/ruoyi/type';
+
 import { computed, onMounted, reactive, ref, useTemplateRef } from 'vue';
+import { useRouter } from 'vue-router';
 
 import { useAccess } from '@vben/access';
 import { Page } from '@vben/common-ui';
@@ -11,14 +14,18 @@ import Delete from '~icons/ep/delete';
 import Edit from '~icons/ep/edit';
 import Refresh from '~icons/ep/refresh';
 import Search from '~icons/ep/search';
+import Log from '~icons/mynaui/terminal';
+import Play from '~icons/solar/play-linear';
 
 import { getDict } from '#/api/ruoyi';
 import {
-  addPostApi,
-  deletePostApi,
-  getListPostApi,
-  updatePostApi,
-} from '#/api/system/post';
+  addJobApi,
+  changeJobStatusApi,
+  deleteJobApi,
+  getJobListApi,
+  runJobApi,
+  updateJobApi,
+} from '#/api/system/job';
 import DictTag from '#/components/dict-tag/index.vue';
 import TableToolbar from '#/components/table-toolbar/index.vue';
 
@@ -26,6 +33,7 @@ import Dialog from './dialog.vue';
 
 const { hasAccessByCodes, hasAccessByRoles } = useAccess();
 
+const router = useRouter();
 const loading = ref(false);
 const pageInfo = ref({
   currentPage: 1,
@@ -37,28 +45,28 @@ const tableData = ref<any[]>([]);
 const tableSelections = ref<any[]>([]);
 
 const toolbarConfig = reactive({
-  create: { show: true, disabled: false, accessCodes: ['system:post:add'] },
+  create: { show: true, disabled: false, accessCodes: ['monitor:job:add'] },
   update: {
     show: true,
     disabled: computed(() => tableSelections.value.length !== 1),
-    accessCodes: ['system:post:edit'],
+    accessCodes: ['monitor:job:edit'],
   },
   delete: {
     show: true,
     disabled: computed(() => tableSelections.value.length === 0),
-    accessCodes: ['system:post:remove'],
+    accessCodes: ['monitor:job:remove'],
   },
   import: { show: false },
   export: { show: false },
   search: { show: true, isVisible: true },
   filter: {
     columns: [
-      { label: '岗位编号', field: 'postId', visible: true },
-      { label: '岗位编码', field: 'postCode', visible: true },
-      { label: '岗位名称', field: 'postName', visible: true },
-      { label: '岗位排序', field: 'postSort', visible: true },
+      { label: '任务编号', field: 'jobId', visible: true },
+      { label: '任务名称', field: 'jobName', visible: true },
+      { label: '任务组名', field: 'jobGroup', visible: true },
+      { label: '调用目标字符串', field: 'invokeTarget', visible: true },
+      { label: 'cron执行表达式', field: 'cronExpression', visible: true },
       { label: '状态', field: 'status', visible: true },
-      { label: '创建时间', field: 'createTime', visible: true },
     ],
   },
 });
@@ -74,17 +82,18 @@ const columnVisible = computed(() => {
 const dialogRef = useTemplateRef<typeof Dialog>('dialogRef');
 const searchFormRef = useTemplateRef<typeof ElForm>('searchFormRef');
 const searchData = reactive({
-  postCode: undefined,
-  postName: undefined,
+  jobName: undefined,
+  jobGroup: undefined,
   status: undefined,
 });
-const options = reactive<{ statusOptions: any[] }>({
+const options = reactive<{ jobGroupOptions: Dict[]; statusOptions: any[] }>({
   statusOptions: [],
+  jobGroupOptions: [],
 });
 
 function onReset() {
-  searchData.postCode = undefined;
-  searchData.postName = undefined;
+  searchData.jobName = undefined;
+  searchData.jobGroup = undefined;
   searchData.status = undefined;
   searchFormRef.value!.resetFields();
   onQuery();
@@ -95,10 +104,10 @@ function onCreate() {
 }
 
 async function onCreateConfirm(data: any) {
-  await addPostApi(data);
+  await addJobApi(data);
   await onQuery();
   dialogRef.value?.close();
-  ElMessage.success('岗位添加成功');
+  ElMessage.success('任务添加成功');
 }
 
 async function onUpdate(data: any) {
@@ -106,26 +115,50 @@ async function onUpdate(data: any) {
 }
 
 async function onUpdateConfirm(data: any) {
-  await updatePostApi(data);
+  await updateJobApi(data);
   await onQuery();
   dialogRef.value?.close();
-  ElMessage.success('岗位修改成功');
+  ElMessage.success('任务修改成功');
+}
+
+async function onRun(data: any) {
+  ElMessageBox.confirm(`确定执行任务"${data.jobName}"？`, '警告', {
+    confirmButtonText: '执行',
+    cancelButtonText: '取消',
+    type: 'warning',
+  })
+    .then(async () => {
+      await runJobApi({
+        jobId: data.jobId,
+        jobGroup: data.jobGroup,
+      });
+      await onQuery();
+      ElMessage.success('任务执行成功');
+    })
+    .catch();
 }
 
 async function onDelete(data: any[]) {
-  const names = data.map((it: any) => `[${it.postName}]`).join('，');
-  ElMessageBox.confirm(`是否确认删除岗位"${names}"？`, '警告', {
+  const names = data.map((it: any) => `[${it.jobName}]`).join('，');
+  ElMessageBox.confirm(`是否确认删除任务"${names}"？`, '警告', {
     confirmButtonText: '删除',
     cancelButtonText: '取消',
     type: 'warning',
   })
     .then(async () => {
-      const ids = data.map((it: any) => it.postId);
-      await deletePostApi(ids);
+      const ids = data.map((it: any) => it.jobId);
+      await deleteJobApi(ids);
       await onQuery();
-      ElMessage.success('岗位删除成功');
+      ElMessage.success('任务删除成功');
     })
     .catch();
+}
+
+async function onLog(jobId?: number) {
+  await router.push({
+    name: 'JobLog',
+    params: { jobId },
+  });
 }
 
 function onSearchVisible(visible: boolean) {
@@ -133,9 +166,9 @@ function onSearchVisible(visible: boolean) {
 }
 
 async function onQuery() {
-  const res = await getListPostApi({
-    postCode: searchData.postCode,
-    postName: searchData.postName,
+  const res = await getJobListApi({
+    jobName: searchData.jobName,
+    jobGroup: searchData.jobGroup,
     status: searchData.status,
     pageNum: pageInfo.value.currentPage,
     pageSize: pageInfo.value.pageSize,
@@ -159,8 +192,18 @@ function onSelectChange(selection: any) {
   tableSelections.value = selection;
 }
 
+async function onStatusChange(jobId: number, status: '0' | '1') {
+  await changeJobStatusApi({
+    jobId,
+    status,
+  });
+  await onQuery();
+  ElMessage.success('状态修改成功');
+}
+
 onMounted(async () => {
   options.statusOptions = await getDict('sys_normal_disable');
+  options.jobGroupOptions = await getDict('sys_job_group');
 
   await onQuery();
 });
@@ -176,26 +219,26 @@ onMounted(async () => {
         v-show="toolbarConfig.search.isVisible"
         @submit.prevent="onQuery"
       >
-        <el-form-item label="岗位编码" prop="postCode">
+        <el-form-item label="任务名称" prop="jobName">
           <el-input
-            v-model="searchData.postCode"
-            placeholder="请输入岗位编码"
+            v-model="searchData.jobName"
+            placeholder="请输入任务名称"
             clearable
             style="width: 240px"
           />
         </el-form-item>
-        <el-form-item label="岗位名称" prop="postName">
+        <el-form-item label="任务组名" prop="jobGroup">
           <el-input
-            v-model="searchData.postName"
-            placeholder="请输入岗位名称"
+            v-model="searchData.jobGroup"
+            placeholder="请选择任务组名"
             clearable
             style="width: 240px"
           />
         </el-form-item>
-        <el-form-item label="状态" prop="status">
+        <el-form-item label="任务状态" prop="status">
           <el-select
             v-model="searchData.status"
-            placeholder="岗位状态"
+            placeholder="请选择任务状态"
             clearable
             style="width: 240px"
           >
@@ -229,7 +272,20 @@ onMounted(async () => {
         @refresh="onQuery"
         @search-visible="onSearchVisible"
         @filter-change="onColumnFilterChange"
-      />
+      >
+        <el-button
+          v-if="
+            hasAccessByCodes(['monitor:job:query']) ||
+            hasAccessByRoles(['admin'])
+          "
+          type="info"
+          plain
+          :icon="Log"
+          @click="onLog()"
+        >
+          日志
+        </el-button>
+      </TableToolbar>
 
       <el-table
         v-loading="loading"
@@ -239,28 +295,45 @@ onMounted(async () => {
       >
         <el-table-column type="selection" width="50" align="center" />
         <el-table-column
-          v-if="columnVisible.get('postId')"
-          label="岗位编号"
-          prop="postId"
+          v-if="columnVisible.get('jobId')"
+          label="任务编号"
+          prop="jobId"
           align="center"
+          min-width="80"
         />
         <el-table-column
-          v-if="columnVisible.get('postCode')"
-          label="岗位编码"
-          prop="postCode"
+          v-if="columnVisible.get('jobName')"
+          label="任务名称"
+          prop="jobName"
           align="center"
+          min-width="80"
         />
         <el-table-column
-          v-if="columnVisible.get('postName')"
-          label="岗位名称"
-          prop="postName"
+          v-if="columnVisible.get('jobGroup')"
+          label="任务组名"
           align="center"
+          min-width="80"
+        >
+          <template #default="{ row }: any">
+            <DictTag
+              :dict-value="row.jobGroup"
+              :dict-list="options.jobGroupOptions"
+            />
+          </template>
+        </el-table-column>
+        <el-table-column
+          v-if="columnVisible.get('invokeTarget')"
+          label="调用目标字符串"
+          prop="invokeTarget"
+          align="center"
+          min-width="160"
         />
         <el-table-column
-          v-if="columnVisible.get('postSort')"
-          label="岗位排序"
-          prop="postSort"
+          v-if="columnVisible.get('cronExpression')"
+          label="cron执行表达式"
+          prop="cronExpression"
           align="center"
+          min-width="160"
         />
         <el-table-column
           v-if="columnVisible.get('status')"
@@ -268,29 +341,26 @@ onMounted(async () => {
           align="center"
           width="100"
         >
-          <template #default="{ row }: any">
-            <DictTag
-              :dict-value="row.status"
-              :dict-list="options.statusOptions"
+          <template #default="scope">
+            <el-switch
+              :model-value="scope.row.status"
+              active-value="0"
+              inactive-value="1"
+              @change="
+                onStatusChange(
+                  scope.row.jobId,
+                  scope.row.status === '0' ? '1' : '0',
+                )
+              "
             />
           </template>
         </el-table-column>
-        <el-table-column
-          v-if="columnVisible.get('createTime')"
-          label="创建时间"
-          align="center"
-          prop="createTime"
-        />
         <el-table-column label="操作" align="center" width="150" fixed="right">
           <template #default="scope">
-            <el-tooltip
-              content="修改"
-              placement="top"
-              v-if="scope.row.roleId !== 1"
-            >
+            <el-tooltip content="修改" placement="top">
               <el-button
                 v-if="
-                  hasAccessByCodes(['system:post:edit']) ||
+                  hasAccessByCodes(['monitor:job:edit']) ||
                   hasAccessByRoles(['admin'])
                 "
                 link
@@ -299,20 +369,40 @@ onMounted(async () => {
                 @click="onUpdate(scope.row)"
               />
             </el-tooltip>
-            <el-tooltip
-              content="删除"
-              placement="top"
-              v-if="scope.row.roleId !== 1"
-            >
+            <el-tooltip content="执行一次" placement="top">
               <el-button
                 v-if="
-                  hasAccessByCodes(['system:post:remove']) ||
+                  hasAccessByCodes(['monitor:job:changeStatus']) ||
+                  hasAccessByRoles(['admin'])
+                "
+                link
+                type="primary"
+                :icon="Play"
+                @click="onRun(scope.row)"
+              />
+            </el-tooltip>
+            <el-tooltip content="删除" placement="top">
+              <el-button
+                v-if="
+                  hasAccessByCodes(['monitor:job:remove']) ||
                   hasAccessByRoles(['admin'])
                 "
                 link
                 type="primary"
                 :icon="Delete"
                 @click="onDelete([scope.row])"
+              />
+            </el-tooltip>
+            <el-tooltip content="调度日志" placement="top">
+              <el-button
+                v-if="
+                  hasAccessByCodes(['monitor:job:query']) ||
+                  hasAccessByRoles(['admin'])
+                "
+                link
+                type="primary"
+                :icon="Log"
+                @click="onLog(scope.row.jobId)"
               />
             </el-tooltip>
           </template>
@@ -334,6 +424,7 @@ onMounted(async () => {
     <Dialog
       ref="dialogRef"
       :status-options="options.statusOptions"
+      :job-group-options="options.jobGroupOptions"
       @create="onCreateConfirm"
       @edit="onUpdateConfirm"
     />
