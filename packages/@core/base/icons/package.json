@@ -36,9 +36,7 @@
   "dependencies": {
     "@iconify/vue": "catalog:",
     "lucide-vue-next": "catalog:",
-    "vue": "catalog:"
-  },
-  "devDependencies": {
+    "vue": "catalog:",
     "@iconify-json/ep": "catalog:"
   }
 }

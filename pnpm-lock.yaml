@@ -1334,6 +1334,9 @@ importers:
 
   packages/@core/base/icons:
     dependencies:
+      '@iconify-json/ep':
+        specifier: 'catalog:'
+        version: 1.2.4
       '@iconify/vue':
         specifier: 'catalog:'
         version: 5.0.0(vue@3.5.28(typescript@5.9.3))
@@ -1343,10 +1346,6 @@ importers:
       vue:
         specifier: 'catalog:'
         version: 3.5.28(typescript@5.9.3)
-    devDependencies:
-      '@iconify-json/ep':
-        specifier: 'catalog:'
-        version: 1.2.4
 
   packages/@core/base/shared:
     dependencies:
