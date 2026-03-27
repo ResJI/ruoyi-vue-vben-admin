@@ -38,7 +38,13 @@ interface BasicUserInfo {
   username: string;
 }
 
-type ClassType = Array<object | string> | object | string;
+type ClassType =
+  | Array<ClassType>
+  | boolean
+  | null
+  | object
+  | string
+  | undefined;
 
 export type {
   BasicOption,
