@@ -1,5 +1,7 @@
 import type { RouteRecordRaw } from 'vue-router';
 
+import IconUser from '~icons/ep/user';
+
 import { $t } from '#/locales';
 
 const routes: RouteRecordRaw[] = [
@@ -8,7 +10,7 @@ const routes: RouteRecordRaw[] = [
     path: '/profile',
     component: () => import('#/views/_core/profile/index.vue'),
     meta: {
-      icon: 'lucide:user',
+      icon: IconUser,
       hideInMenu: true,
       title: $t('page.auth.profile'),
     },
