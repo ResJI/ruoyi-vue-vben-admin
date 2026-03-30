@@ -80,10 +80,10 @@ const toolbarConfig = reactive({
     columns: [
       { label: '用户编号', field: 'userId', visible: true },
       { label: '用户名称', field: 'userName', visible: true },
-      { label: '用户昵称', field: 'nickName', visible: true },
+      { label: '用户姓名', field: 'nickName', visible: true },
       { label: '部门', field: 'deptName', visible: true },
       { label: '手机号码', field: 'phonenumber', visible: true },
-      { label: '状态', field: 'status', visible: true },
+      { label: '用户状态', field: 'status', visible: true },
       { label: '创建时间', field: 'createTime', visible: true },
     ],
   },
@@ -110,7 +110,7 @@ function onReset() {
   searchData.phonenumber = undefined;
   searchData.status = undefined;
   searchData.dateRange = [null, null];
-  searchFormRef.value!.resetFields();
+  searchFormRef.value?.resetFields();
   emits('reset');
   onQuery();
 }
@@ -180,7 +180,7 @@ function onColumnFilterChange({
   status: boolean;
 }) {
   const data = toolbarConfig.filter.columns.find((it) => it.field === field);
-  data!.visible = status;
+  data && (data.visible = status);
 }
 
 function onSelectChange(selection: any) {
@@ -189,7 +189,7 @@ function onSelectChange(selection: any) {
 </script>
 
 <template>
-  <div>
+  <div class="w-full h-full overflow-auto flex flex-col items-end">
     <el-form
       :model="searchData"
       ref="searchFormRef"
@@ -213,7 +213,7 @@ function onSelectChange(selection: any) {
           style="width: 240px"
         />
       </el-form-item>
-      <el-form-item label="状态" prop="status">
+      <el-form-item label="用户状态" prop="status">
         <el-select
           v-model="searchData.status"
           placeholder="用户状态"
@@ -247,6 +247,7 @@ function onSelectChange(selection: any) {
     </el-form>
 
     <TableToolbar
+      class="w-full"
       :create-config="toolbarConfig.create"
       :update-config="toolbarConfig.update"
       :delete-config="toolbarConfig.delete"
@@ -264,141 +265,145 @@ function onSelectChange(selection: any) {
       @filter-change="onColumnFilterChange"
     />
 
-    <el-table
-      v-loading="loading"
-      :data="tableData"
-      @selection-change="onSelectChange"
-    >
-      <el-table-column type="selection" width="50" align="center" />
-      <el-table-column
-        v-if="columnVisible.get('userId')"
-        label="用户编号"
-        align="center"
-        prop="userId"
-      />
-      <el-table-column
-        v-if="columnVisible.get('userName')"
-        label="用户名称"
-        align="center"
-        prop="userName"
-        :show-overflow-tooltip="true"
-      />
-      <el-table-column
-        v-if="columnVisible.get('nickName')"
-        label="用户昵称"
-        align="center"
-        prop="nickName"
-        :show-overflow-tooltip="true"
-      />
-      <el-table-column
-        v-if="columnVisible.get('deptName')"
-        label="部门"
-        align="center"
-        prop="dept.deptName"
-        :show-overflow-tooltip="true"
-      />
-      <el-table-column
-        v-if="columnVisible.get('phonenumber')"
-        label="手机号码"
-        align="center"
-        prop="phonenumber"
-        width="120"
-      />
-      <el-table-column
-        v-if="columnVisible.get('status')"
-        label="状态"
-        align="center"
+    <div class="w-full h-0 flex-1">
+      <el-table
+        v-loading="loading"
+        :data="tableData"
+        height="100%"
+        @selection-change="onSelectChange"
       >
-        <template #default="scope">
-          <el-switch
-            :model-value="scope.row.status"
-            active-value="0"
-            inactive-value="1"
-            @change="
-              onStatusChange(
-                scope.row.userId,
-                scope.row.status === '0' ? '1' : '0',
-              )
-            "
-          />
-        </template>
-      </el-table-column>
-      <el-table-column
-        v-if="columnVisible.get('createTime')"
-        label="创建时间"
-        align="center"
-        prop="createTime"
-        width="160"
-      />
-      <el-table-column label="操作" align="center" width="150" fixed="right">
-        <template #default="scope">
-          <el-tooltip
-            content="修改"
-            placement="top"
-            v-if="scope.row.userId !== 1"
-          >
-            <el-button
-              v-if="
-                hasAccessByCodes(['system:user:edit']) ||
-                hasAccessByRoles(['admin'])
+        <el-table-column type="selection" width="50" align="center" />
+        <el-table-column
+          v-if="columnVisible.get('userId')"
+          label="用户编号"
+          align="center"
+          prop="userId"
+        />
+        <el-table-column
+          v-if="columnVisible.get('userName')"
+          label="用户名称"
+          align="center"
+          prop="userName"
+          :show-overflow-tooltip="true"
+        />
+        <el-table-column
+          v-if="columnVisible.get('nickName')"
+          label="用户姓名"
+          align="center"
+          prop="nickName"
+          :show-overflow-tooltip="true"
+        />
+        <el-table-column
+          v-if="columnVisible.get('deptName')"
+          label="部门"
+          align="center"
+          prop="dept.deptName"
+          :show-overflow-tooltip="true"
+        />
+        <el-table-column
+          v-if="columnVisible.get('phonenumber')"
+          label="手机号码"
+          align="center"
+          prop="phonenumber"
+          width="120"
+        />
+        <el-table-column
+          v-if="columnVisible.get('status')"
+          label="状态"
+          align="center"
+        >
+          <template #default="scope">
+            <el-switch
+              :model-value="scope.row.status"
+              active-value="0"
+              inactive-value="1"
+              @change="
+                onStatusChange(
+                  scope.row.userId,
+                  scope.row.status === '0' ? '1' : '0',
+                )
               "
-              link
-              type="primary"
-              :icon="Edit"
-              @click="onUpdate(scope.row)"
             />
-          </el-tooltip>
-          <el-tooltip
-            content="删除"
-            placement="top"
-            v-if="scope.row.userId !== 1"
-          >
-            <el-button
-              v-if="
-                hasAccessByCodes(['system:user:remove']) ||
-                hasAccessByRoles(['admin'])
-              "
-              link
-              type="primary"
-              :icon="Delete"
-              @click="onDelete([scope.row])"
-            />
-          </el-tooltip>
-          <el-tooltip
-            content="重置密码"
-            placement="top"
-            v-if="scope.row.userId !== 1"
-          >
-            <el-button
-              v-if="
-                hasAccessByCodes(['system:user:resetPwd']) ||
-                hasAccessByRoles(['admin'])
-              "
-              link
-              type="primary"
-              :icon="Key"
-              @click="onResetPassword(scope.row)"
-            />
-          </el-tooltip>
-          <el-tooltip
-            content="分配角色"
-            placement="top"
-            v-if="scope.row.userId !== 1"
-          >
-            <el-button
-              v-if="
-                hasAccessByCodes(['system:user:edit']) ||
-                hasAccessByRoles(['admin'])
-              "
-              link
-              type="primary"
-              :icon="CircleCheck"
-              @click="onDistributeRole(scope.row)"
-            />
-          </el-tooltip>
-        </template>
-      </el-table-column>
-    </el-table>
+          </template>
+        </el-table-column>
+        <el-table-column
+          v-if="columnVisible.get('createTime')"
+          label="创建时间"
+          align="center"
+          prop="createTime"
+          width="160"
+        />
+        <el-table-column label="操作" align="center" width="150" fixed="right">
+          <template #default="scope">
+            <el-tooltip
+              content="修改"
+              placement="top"
+              v-if="scope.row.userId !== 1"
+            >
+              <el-button
+                v-if="
+                  hasAccessByCodes(['system:user:edit']) ||
+                  hasAccessByRoles(['admin'])
+                "
+                link
+                type="primary"
+                :icon="Edit"
+                @click="onUpdate(scope.row)"
+              />
+            </el-tooltip>
+            <el-tooltip
+              content="删除"
+              placement="top"
+              v-if="scope.row.userId !== 1"
+            >
+              <el-button
+                v-if="
+                  hasAccessByCodes(['system:user:remove']) ||
+                  hasAccessByRoles(['admin'])
+                "
+                link
+                type="primary"
+                :icon="Delete"
+                @click="onDelete([scope.row])"
+              />
+            </el-tooltip>
+            <el-tooltip
+              content="重置密码"
+              placement="top"
+              v-if="scope.row.userId !== 1"
+            >
+              <el-button
+                v-if="
+                  hasAccessByCodes(['system:user:resetPwd']) ||
+                  hasAccessByRoles(['admin'])
+                "
+                link
+                type="primary"
+                :icon="Key"
+                @click="onResetPassword(scope.row)"
+              />
+            </el-tooltip>
+            <el-tooltip
+              content="分配角色"
+              placement="top"
+              v-if="scope.row.userId !== 1"
+            >
+              <el-button
+                v-if="
+                  hasAccessByCodes(['system:user:edit']) ||
+                  hasAccessByRoles(['admin'])
+                "
+                link
+                type="primary"
+                :icon="CircleCheck"
+                @click="onDistributeRole(scope.row)"
+              />
+            </el-tooltip>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
+
     <el-pagination
       :current-page="pageInfo.currentPage"
       :page-size="pageInfo.pageSize"

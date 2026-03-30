@@ -57,7 +57,7 @@ const toolbarConfig = reactive({
   filter: {
     columns: [
       { label: '用户名称', field: 'userName', visible: true },
-      { label: '用户昵称', field: 'nickName', visible: true },
+      { label: '用户姓名', field: 'nickName', visible: true },
       { label: '邮箱', field: 'email', visible: true },
       { label: '手机', field: 'phonenumber', visible: true },
       { label: '状态', field: 'status', visible: true },
@@ -87,7 +87,7 @@ const options = reactive<{ statusOptions: any[] }>({
 function onReset() {
   searchData.userName = undefined;
   searchData.phonenumber = undefined;
-  searchFormRef.value!.resetFields();
+  searchFormRef.value?.resetFields();
   onQuery();
 }
 
@@ -139,7 +139,7 @@ function onColumnFilterChange({
   status: boolean;
 }) {
   const data = toolbarConfig.filter.columns.find((it) => it.field === field);
-  data!.visible = status;
+  data && (data.visible = status);
 }
 
 function onSelectChange(selection: any) {
@@ -259,7 +259,7 @@ function onClose() {
         />
         <el-table-column
           v-if="columnVisible.get('nickName')"
-          label="用户昵称"
+          label="用户姓名"
           prop="nickName"
         />
         <el-table-column

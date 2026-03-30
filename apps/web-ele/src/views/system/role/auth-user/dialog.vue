@@ -69,7 +69,7 @@ function onSelectChange(selection: any) {
 
 async function onSubmit() {
   try {
-    await searchFormRef.value!.validate();
+    await searchFormRef.value?.validate();
     emits('save', tableSelections.value);
   } catch {}
 }
@@ -79,7 +79,7 @@ function onReset() {
     userName: undefined,
     phonenumber: undefined,
   };
-  searchFormRef.value!.resetFields();
+  searchFormRef.value?.resetFields();
   onQuery();
 }
 
@@ -151,7 +151,7 @@ defineExpose({ open, close });
     >
       <el-table-column type="selection" width="50" align="center" />
       <el-table-column label="用户名称" prop="userName" />
-      <el-table-column label="用户昵称" prop="nickName" />
+      <el-table-column label="用户姓名" prop="nickName" />
       <el-table-column label="邮箱" prop="email" />
       <el-table-column label="手机" prop="phonenumber" />
       <el-table-column label="状态" align="center" prop="status">

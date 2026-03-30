@@ -30,9 +30,8 @@ const emits = defineEmits<{
 }>();
 
 enum FormType {
-  // eslint-disable-next-line no-unused-vars
   CREATE,
-  // eslint-disable-next-line no-unused-vars
+
   EDIT,
 }
 
@@ -69,7 +68,7 @@ const formRules: FormRules = {
       trigger: 'blur',
     },
   ],
-  nickName: [{ required: true, message: '用户昵称不能为空', trigger: 'blur' }],
+  nickName: [{ required: true, message: '用户姓名不能为空', trigger: 'blur' }],
   password: [
     { required: true, message: '用户密码不能为空', trigger: 'blur' },
     {
@@ -103,7 +102,7 @@ const formRules: FormRules = {
 function open(data?: FormData) {
   formType.value = data ? FormType.EDIT : FormType.CREATE;
   if (formType.value === FormType.EDIT) {
-    formData.value = data!;
+    formData.value = data as FormData;
   }
   visible.value = true;
 }
@@ -118,7 +117,7 @@ function close() {
 
 async function onSubmit() {
   try {
-    await formRef.value!.validate();
+    await formRef.value?.validate();
     if (formType.value === FormType.CREATE) {
       emits('create', formData.value);
     } else {
@@ -145,10 +144,10 @@ defineExpose({ open, close });
     >
       <el-row>
         <el-col :span="12">
-          <el-form-item label="用户昵称" prop="nickName">
+          <el-form-item label="用户姓名" prop="nickName">
             <el-input
               v-model="formData.nickName"
-              placeholder="请输入用户昵称"
+              placeholder="请输入用户姓名"
               maxlength="30"
             />
           </el-form-item>

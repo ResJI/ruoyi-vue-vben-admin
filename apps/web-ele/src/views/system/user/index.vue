@@ -34,7 +34,6 @@ const userDialogRef = useTemplateRef('userDialogRef');
 const departmentTree = ref<any[]>([]);
 const enabledDepartmentTree = ref<any[]>([]);
 const tableData = ref<any[]>([]);
-const dataTotal = ref(0);
 const loading = ref(false);
 const selectedDepartment = ref<any>();
 const queryData = ref<any>({});
@@ -69,19 +68,19 @@ async function query() {
     loading.value = false;
   });
   tableData.value = res.rows;
-  dataTotal.value = res.total;
+  pageInfo.value.total = res.total;
 }
 
 async function onReset() {
   selectedDepartment.value = null;
-  userLeftRef.value!.reset();
+  userLeftRef.value?.reset();
 }
 
 async function onCreate() {
   const { posts, roles } = await getPositionsAndRolesApi();
   positionOptions.value = posts;
   roleOptions.value = roles;
-  userDialogRef.value!.open();
+  userDialogRef.value?.open();
 }
 
 async function onEdit(d: any) {
@@ -90,7 +89,7 @@ async function onEdit(d: any) {
   );
   positionOptions.value = posts;
   roleOptions.value = roles;
-  userDialogRef.value!.open({ ...data, postIds, roleIds });
+  userDialogRef.value?.open({ ...data, postIds, roleIds });
 }
 
 function onDelete(data: any[]) {
@@ -104,7 +103,7 @@ function onDelete(data: any[]) {
       const userIds = data.map((it: any) => it.userId);
       await deleteUserApi(userIds);
       ElMessage.success('用户删除成功');
-      userDialogRef.value!.close();
+      userDialogRef.value?.close();
       await query();
     })
     .catch();
@@ -139,14 +138,14 @@ function onDistributeRole(data: any) {
 async function create(data: any) {
   await createUserApi(data);
   ElMessage.success('用户创建成功');
-  userDialogRef.value!.close();
+  userDialogRef.value?.close();
   await query();
 }
 
 async function edit(data: any) {
   await updateUserApi(data);
   ElMessage.success('用户修改成功');
-  userDialogRef.value!.close();
+  userDialogRef.value?.close();
   await query();
 }
 
@@ -195,18 +194,16 @@ onMounted(async () => {
           <UserLeft
             ref="userLeftRef"
             :department-tree="departmentTree"
-            class="mr-[20px]"
             @node-click="onNodeClick"
           />
         </Pane>
         <Pane size="82">
           <UserRight
             :table-data="tableData"
-            :data-total="dataTotal"
             :loading="loading"
             :status-options="statusOptions"
             :page-info="pageInfo"
-            class="ml-[20px]"
+            class="pl-[20px]"
             @query="onQuery"
             @reset="onReset"
             @status-change="onStatusChange"

@@ -18,7 +18,6 @@ export default defineConfig(async () => {
           '/dev-api': {
             changeOrigin: true,
             rewrite: (path) => path.replace(/^\/dev-api/, ''),
-            // mock代理目标地址
             target: 'http://localhost:8088',
             ws: true,
           },

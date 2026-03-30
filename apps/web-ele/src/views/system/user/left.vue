@@ -22,7 +22,7 @@ const deptName = ref('');
 
 watch(deptName, (value) => {
   // eslint-disable-next-line unicorn/no-array-callback-reference
-  treeRef.value!.filter(value);
+  treeRef.value?.filter(value);
 });
 
 function nodeFilter(value: any, data: any) {
@@ -36,31 +36,33 @@ function onNodeClick(data: any) {
 
 function reset() {
   deptName.value = '';
-  treeRef.value!.setCurrentKey(null);
+  treeRef.value?.setCurrentKey(null);
 }
 
 defineExpose({ reset });
 </script>
 
 <template>
-  <div>
+  <div class="w-full h-full flex flex-col">
     <el-input
       v-model="deptName"
       placeholder="请输入部门名称"
       clearable
       :prefix-icon="Search"
-      style="margin-bottom: 20px"
+      class="!mb-2 pr-[20px]"
     />
-    <el-tree
-      ref="treeRef"
-      :data="departmentTree"
-      :props="{ label: 'label', children: 'children' }"
-      :expand-on-click-node="false"
-      :filter-node-method="nodeFilter"
-      node-key="id"
-      highlight-current
-      default-expand-all
-      @node-click="onNodeClick"
-    />
+    <div class="h-0 flex-1 overflow-auto">
+      <el-tree
+        ref="treeRef"
+        :data="departmentTree"
+        :props="{ label: 'label', children: 'children' }"
+        :expand-on-click-node="false"
+        :filter-node-method="nodeFilter"
+        node-key="id"
+        highlight-current
+        default-expand-all
+        @node-click="onNodeClick"
+      />
+    </div>
   </div>
 </template>
