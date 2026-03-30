@@ -24,9 +24,7 @@ const emits = defineEmits<{
 }>();
 
 enum FormType {
-  // eslint-disable-next-line no-unused-vars
   CREATE,
-  // eslint-disable-next-line no-unused-vars
   EDIT,
 }
 
@@ -49,7 +47,7 @@ const formData = ref<Partial<FormData>>({
   status: '0',
   roleSort: 0,
 });
-const checkStrictly = ref(true);
+const checkStrictly = ref(false);
 const checkAll = ref(false);
 const expandAll = ref(false);
 const treeShow = ref(true);
@@ -76,7 +74,7 @@ const formRules: FormRules = {
 function open(data?: FormData) {
   formType.value = data ? FormType.EDIT : FormType.CREATE;
   if (formType.value === FormType.EDIT) {
-    formData.value = data!;
+    formData.value = data as FormData;
     nextTick(() => {
       treeRef.value?.setCheckedKeys(formData.value.menuIds);
     });
@@ -90,7 +88,7 @@ function close() {
     status: '0',
     roleSort: 0,
   };
-  checkStrictly.value = true;
+  checkStrictly.value = false;
   checkAll.value = false;
   expandAll.value = false;
   treeShow.value = false;
@@ -100,7 +98,7 @@ function close() {
 
 async function onSubmit() {
   try {
-    await formRef.value!.validate();
+    await formRef.value?.validate();
     const menuSelectedIds = treeRef.value?.getCheckedKeys();
     const halfSelectedIds = treeRef.value?.getHalfCheckedKeys();
     menuSelectedIds.unshift(...halfSelectedIds);
