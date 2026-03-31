@@ -97,7 +97,7 @@ watch(
         :avatar
         :menus
         :text="userStore.userInfo?.realName"
-        description="ann.vben@gmail.com"
+        :description="userStore.userInfo?.phoneNumber ?? '电话未知'"
         tag-text=""
         @logout="handleLogout"
       />
