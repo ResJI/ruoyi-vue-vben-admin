@@ -2,6 +2,7 @@ import type { RouteRecordRaw } from 'vue-router';
 
 import IconShield from '~icons/bi/shield-lock';
 import IconClock from '~icons/ep/clock';
+import IconSetting from '~icons/ep/setting';
 import IconUser from '~icons/ep/user';
 import IconPost from '~icons/gis/position-man';
 import IconBranch from '~icons/icon-park-solid/branch-one';
@@ -12,7 +13,7 @@ import IconGroup from '~icons/streamline/user-multiple-group';
 const routes: RouteRecordRaw[] = [
   {
     meta: {
-      icon: 'ep:setting',
+      icon: IconSetting,
       order: -1,
       title: '系统管理',
       authority: ['admin', 'system'],
