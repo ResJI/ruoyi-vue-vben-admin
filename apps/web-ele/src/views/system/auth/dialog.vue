@@ -22,16 +22,14 @@ const emits = defineEmits<{
 }>();
 
 enum FormType {
-  // eslint-disable-next-line no-unused-vars
   CREATE,
-  // eslint-disable-next-line no-unused-vars
+
   EDIT,
 }
 
 interface FormData {
   menuId: number;
   parentId: number;
-  menuType: string;
   menuName: string;
   orderNum: number;
   perms: string;
@@ -42,8 +40,8 @@ const visible = ref(false);
 const formType = ref<FormType>(FormType.CREATE);
 const formRef = useTemplateRef<FormInstance>('formRef');
 const formData = ref<Partial<FormData>>({
-  menuType: 'F',
   orderNum: 0,
+  perms: '',
 });
 
 const formRules: FormRules = {
@@ -55,7 +53,7 @@ const formRules: FormRules = {
 function open(data?: FormData, create: boolean = true) {
   formType.value = create ? FormType.CREATE : FormType.EDIT;
   if (formType.value === FormType.EDIT) {
-    formData.value = cloneDeep(data!);
+    formData.value = cloneDeep(data as FormData);
   } else {
     formData.value.parentId = data?.menuId;
   }
@@ -64,8 +62,8 @@ function open(data?: FormData, create: boolean = true) {
 
 function close() {
   formData.value = {
-    menuType: 'F',
     orderNum: 0,
+    perms: '',
   };
   formRef.value?.resetFields();
   visible.value = false;
@@ -73,10 +71,10 @@ function close() {
 
 async function onSubmit() {
   try {
-    await formRef.value!.validate();
+    await formRef.value?.validate();
     const baseData = {
+      menuType: 'F',
       parentId: formData.value.parentId,
-      menuType: formData.value.menuType,
       menuName: formData.value.menuName,
       orderNum: formData.value.orderNum,
       perms: formData.value.perms,
@@ -122,15 +120,12 @@ defineExpose({ open, close });
             />
           </el-form-item>
         </el-col>
-        <el-col :span="12">
-          <el-form-item label="权限类型" prop="menuType">
-            <el-radio-group v-model="formData.menuType">
-              <el-radio value="M"> 目录 </el-radio>
-              <el-radio value="F"> 权限 </el-radio>
-            </el-radio-group>
+        <el-col :span="15">
+          <el-form-item label="名称" prop="menuName">
+            <el-input v-model="formData.menuName" placeholder="请输入名称" />
           </el-form-item>
         </el-col>
-        <el-col :span="12">
+        <el-col :span="9">
           <el-form-item label="显示排序" prop="orderNum">
             <el-input-number
               v-model="formData.orderNum"
@@ -141,12 +136,6 @@ defineExpose({ open, close });
           </el-form-item>
         </el-col>
         <el-col :span="24">
-          <el-form-item label="名称" prop="menuName">
-            <el-input v-model="formData.menuName" placeholder="请输入名称" />
-          </el-form-item>
-        </el-col>
-
-        <el-col v-if="formData.menuType !== 'M'" :span="24">
           <el-form-item prop="perms">
             <el-input
               v-model="formData.perms"
