@@ -90,7 +90,7 @@ function onReset() {
   searchData.dictName = undefined;
   searchData.dictType = undefined;
   searchData.status = undefined;
-  searchFormRef.value!.resetFields();
+  searchFormRef.value?.resetFields();
   onQuery();
 }
 
@@ -163,7 +163,7 @@ function onColumnFilterChange({
   status: boolean;
 }) {
   const data = toolbarConfig.filter.columns.find((it) => it.field === field);
-  data!.visible = status;
+  data && (data.visible = status);
 }
 
 function onSelectChange(selection: any) {

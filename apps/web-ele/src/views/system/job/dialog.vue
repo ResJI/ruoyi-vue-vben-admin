@@ -25,9 +25,7 @@ const emits = defineEmits<{
 }>();
 
 enum FormType {
-  // eslint-disable-next-line no-unused-vars
   CREATE,
-  // eslint-disable-next-line no-unused-vars
   EDIT,
 }
 
@@ -65,7 +63,7 @@ const formRules: FormRules = {
 function open(data?: FormData) {
   formType.value = data ? FormType.EDIT : FormType.CREATE;
   if (formType.value === FormType.EDIT) {
-    formData.value = cloneDeep(data!);
+    formData.value = cloneDeep(data as FormData);
   }
   visible.value = true;
 }
@@ -82,7 +80,7 @@ function close() {
 
 async function onSubmit() {
   try {
-    await formRef.value!.validate();
+    await formRef.value?.validate();
     const baseData = {
       jobName: formData.value.jobName,
       jobGroup: formData.value.jobGroup,

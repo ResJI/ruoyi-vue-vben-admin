@@ -22,9 +22,7 @@ const emits = defineEmits<{
 }>();
 
 enum FormType {
-  // eslint-disable-next-line no-unused-vars
   CREATE,
-  // eslint-disable-next-line no-unused-vars
   EDIT,
 }
 
@@ -71,7 +69,7 @@ const formRules: FormRules = {
 function open(data?: FormData, create: boolean = true) {
   formType.value = create ? FormType.CREATE : FormType.EDIT;
   if (formType.value === FormType.EDIT) {
-    formData.value = data!;
+    formData.value = data as FormData;
   } else {
     formData.value.parentId = data?.deptId;
   }
@@ -89,7 +87,7 @@ function close() {
 
 async function onSubmit() {
   try {
-    await formRef.value!.validate();
+    await formRef.value?.validate();
     const baseData = {
       parentId: formData.value.parentId,
       deptName: formData.value.deptName,

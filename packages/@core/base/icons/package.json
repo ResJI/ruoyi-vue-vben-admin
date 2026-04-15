@@ -35,9 +35,9 @@
     }
   },
   "dependencies": {
+    "@iconify-json/ep": "catalog:",
     "@iconify/vue": "catalog:",
     "lucide-vue-next": "catalog:",
-    "vue": "catalog:",
-    "@iconify-json/ep": "catalog:"
+    "vue": "catalog:"
   }
 }

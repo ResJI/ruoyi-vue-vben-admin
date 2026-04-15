@@ -36,7 +36,8 @@ const reset = () => {
 };
 
 async function getSelectionBlob() {
-  const canvas = await selectionRef.value!.$toCanvas();
+  const canvas = await selectionRef.value?.$toCanvas();
+  if (!canvas) return;
   return new Promise<Blob | null>((resolve) => {
     canvas.toBlob((d) => {
       resolve(d);
@@ -45,17 +46,18 @@ async function getSelectionBlob() {
 }
 
 function rotate(deg: number) {
-  imageRef.value!.$rotate(`${deg}deg`);
+  imageRef.value?.$rotate(`${deg}deg`);
   onchange();
 }
 
 function zoom(zoom: number) {
-  imageRef.value!.$zoom(zoom);
+  imageRef.value?.$zoom(zoom);
   onchange();
 }
 
 const onchange = debounce(async () => {
-  const canvas = await selectionRef.value!.$toCanvas();
+  const canvas = await selectionRef.value?.$toCanvas();
+  if (!canvas) return;
   const blob = await new Promise<Blob | null>((resolve) => {
     canvas.toBlob((d) => {
       resolve(d);

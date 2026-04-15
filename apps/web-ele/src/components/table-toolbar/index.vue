@@ -63,13 +63,13 @@ const emits = defineEmits<{
 
 const { hasAccessByCodes, hasAccessByRoles } = useAccess();
 
-const fieldMap = ref<Map<string, Ref<boolean>>>();
+const fieldMap = ref<Map<string, Ref<boolean>>>(new Map());
 watch(
   () => props.filterConfig.columns,
   (columns) => {
     fieldMap.value = new Map<string, Ref<boolean>>();
     columns.forEach((it) => {
-      fieldMap.value!.set(it.field, ref(true));
+      fieldMap.value.set(it.field, ref(true));
     });
   },
 );
@@ -125,12 +125,12 @@ function toggleFilterCheckAll() {
   }
 }
 
-function getVisible(config: ToolConfig) {
-  return (config?.accessCodes?.length ?? 0) > 0
+function getVisible(config?: ToolConfig) {
+  return config && (config?.accessCodes?.length ?? 0) > 0
     ? (hasAccessByCodes(config?.accessCodes ?? []) ||
         hasAccessByRoles(['admin'])) &&
         config.show
-    : config.show;
+    : false;
 }
 </script>
 
@@ -142,7 +142,7 @@ function getVisible(config: ToolConfig) {
         type="primary"
         plain
         :icon="Plus"
-        :disabled="createConfig.disabled"
+        :disabled="createConfig?.disabled"
         @click="onCreate"
       >
         新增
@@ -152,7 +152,7 @@ function getVisible(config: ToolConfig) {
         type="success"
         plain
         :icon="Edit"
-        :disabled="updateConfig.disabled"
+        :disabled="updateConfig?.disabled"
         @click="onUpdate"
       >
         修改
@@ -162,7 +162,7 @@ function getVisible(config: ToolConfig) {
         type="danger"
         plain
         :icon="Delete"
-        :disabled="deleteConfig.disabled"
+        :disabled="deleteConfig?.disabled"
         @click="onDelete"
       >
         删除
@@ -172,7 +172,7 @@ function getVisible(config: ToolConfig) {
         type="info"
         plain
         :icon="Upload"
-        :disabled="importConfig.disabled"
+        :disabled="importConfig?.disabled"
         @click="onImport"
       >
         导入
@@ -182,7 +182,7 @@ function getVisible(config: ToolConfig) {
         type="warning"
         plain
         :icon="Download"
-        :disabled="exportConfig.disabled"
+        :disabled="exportConfig?.disabled"
         @click="onExport"
       >
         导出
@@ -191,16 +191,16 @@ function getVisible(config: ToolConfig) {
     </div>
     <div>
       <el-tooltip
-        v-if="searchConfig.show"
+        v-if="searchConfig?.show"
         class="item"
         effect="dark"
-        :content="searchConfig.isVisible ? '隐藏搜索' : '显示搜索'"
+        :content="searchConfig?.isVisible ? '隐藏搜索' : '显示搜索'"
         placement="top"
       >
         <el-button circle :icon="Search" @click="onSearchVisible" />
       </el-tooltip>
       <el-tooltip
-        v-if="refreshConfig.show"
+        v-if="refreshConfig?.show"
         class="item"
         effect="dark"
         content="刷新"
@@ -230,7 +230,7 @@ function getVisible(config: ToolConfig) {
                 </el-checkbox>
               </el-dropdown-item>
               <el-divider class="!m-1 !w-[unset]" />
-              <template v-for="item in filterConfig.columns" :key="item.field">
+              <template v-for="item in filterConfig?.columns" :key="item.field">
                 <el-dropdown-item>
                   <el-checkbox
                     :model-value="item.visible"

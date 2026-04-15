@@ -405,12 +405,12 @@ function onSelectChange(selection: any) {
     </div>
 
     <el-pagination
-      :current-page="pageInfo.currentPage"
-      :page-size="pageInfo.pageSize"
+      :current-page="pageInfo?.currentPage"
+      :page-size="pageInfo?.pageSize"
       layout="total, sizes, prev, pager, next, jumper"
       :page-sizes="[10, 20, 30, 50]"
       :background="true"
-      :total="pageInfo.total"
+      :total="pageInfo?.total"
       :pager-count="5"
       class="float-right mt-5"
       @size-change="onQuery"

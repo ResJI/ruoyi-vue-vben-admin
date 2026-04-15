@@ -99,7 +99,7 @@ function onReset() {
   searchData.roleKey = undefined;
   searchData.status = undefined;
   searchData.dateRange = [null, null];
-  searchFormRef.value!.resetFields();
+  searchFormRef.value?.resetFields();
   onQuery();
 }
 
@@ -218,7 +218,7 @@ function onColumnFilterChange({
   status: boolean;
 }) {
   const data = toolbarConfig.filter.columns.find((it) => it.field === field);
-  data!.visible = status;
+  data && (data.visible = status);
 }
 
 function onSelectChange(selection: any) {

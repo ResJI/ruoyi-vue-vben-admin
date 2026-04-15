@@ -54,7 +54,7 @@ const options = reactive<{ authTree: any[] }>({
 
 function onReset() {
   searchData.menuName = undefined;
-  searchFormRef.value!.resetFields();
+  searchFormRef.value?.resetFields();
   onQuery();
 }
 

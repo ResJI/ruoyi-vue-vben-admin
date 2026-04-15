@@ -16,8 +16,9 @@ export async function getDict(code: string) {
 }
 
 export async function getConfig(code: string) {
-  return requestClient.get<{code: number; msg: string}>(
-    `/system/config/configKey/${code}`, {
-      responseReturn: 'body'
-    }).then(res => res.msg)
+  return requestClient
+    .get<{ code: number; msg: string }>(`/system/config/configKey/${code}`, {
+      responseReturn: 'body',
+    })
+    .then((res) => res.msg);
 }

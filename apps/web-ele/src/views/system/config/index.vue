@@ -89,7 +89,7 @@ function onReset() {
   searchData.configName = undefined;
   searchData.configKey = undefined;
   searchData.configType = undefined;
-  searchFormRef.value!.resetFields();
+  searchFormRef.value?.resetFields();
   onQuery();
 }
 
@@ -157,7 +157,7 @@ function onColumnFilterChange({
   status: boolean;
 }) {
   const data = toolbarConfig.filter.columns.find((it) => it.field === field);
-  data!.visible = status;
+  data && (data.visible = status);
 }
 
 async function onRefreshCache() {

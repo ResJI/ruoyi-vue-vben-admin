@@ -60,7 +60,7 @@ const options = reactive<{ statusOptions: any[] }>({
 function onReset() {
   searchData.deptName = undefined;
   searchData.status = undefined;
-  searchFormRef.value!.resetFields();
+  searchFormRef.value?.resetFields();
   onQuery();
 }
 

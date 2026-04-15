@@ -71,8 +71,8 @@ function beforeUpload(file: UploadRawFile) {
 }
 /** 上传图片 */
 async function uploadImg() {
-  const blob = await cropperRef.value!.getSelectionBlob();
-  if (blob !== null) {
+  const blob = await cropperRef.value?.getSelectionBlob();
+  if (blob) {
     await props.onUploadImage(blob);
     closeDialog();
   }

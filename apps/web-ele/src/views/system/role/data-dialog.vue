@@ -65,7 +65,7 @@ function onDataScopeSelectChange(data: string) {
 }
 
 function open(data: FormData) {
-  formData.value = data!;
+  formData.value = data as FormData;
   nextTick(() => {
     treeRef.value?.setCheckedKeys(formData.value.deptIds);
   });
@@ -87,7 +87,7 @@ function close() {
 
 async function onSubmit() {
   try {
-    await formRef.value!.validate();
+    await formRef.value?.validate();
     let data = {};
     if (formData.value.dataScope === '2') {
       const selectedIds = treeRef.value?.getCheckedKeys() as number[];
