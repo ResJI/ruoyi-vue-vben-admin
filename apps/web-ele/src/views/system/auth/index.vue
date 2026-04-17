@@ -59,14 +59,6 @@ function onReset() {
 }
 
 async function onCreate(data: any) {
-  const res = await getAuthListApi();
-  options.authTree = [
-    {
-      menuId: 0,
-      menuName: '根节点',
-      children: listToTree(res, 'menuId'),
-    },
-  ];
   dialogRef.value?.open(data);
 }
 
@@ -120,6 +112,13 @@ async function onQuery() {
     menuName: searchData.menuName,
   });
   tableData.value = listToTree(data, 'menuId');
+  options.authTree = [
+    {
+      menuId: 0,
+      menuName: '根节点',
+      children: tableData.value,
+    },
+  ];
 }
 
 onMounted(async () => {
