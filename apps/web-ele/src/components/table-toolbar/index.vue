@@ -130,7 +130,7 @@ function getVisible(config?: ToolConfig) {
     ? (hasAccessByCodes(config?.accessCodes ?? []) ||
         hasAccessByRoles(['admin'])) &&
         config.show
-    : false;
+    : config?.show;
 }
 </script>
 
